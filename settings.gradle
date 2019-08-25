@@ -1,0 +1,8 @@
+rootProject.name = 'TransferMoney'
+
+include 'model'
+include 'service'
+include 'data'
+include 'rest'
+include 'app'
+

@@ -1,0 +1,75 @@
+subprojects {
+    apply plugin: 'java'
+    group = 'com.money'
+    version = '1.0'
+    sourceCompatibility = 1.11
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.1"
+        testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.1"
+        testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project(':model') {
+    dependencies {
+        implementation "com.google.auto.value:auto-value-annotations:1.6.6"
+        annotationProcessor "com.google.auto.value:auto-value:1.6.6"
+    }
+}
+
+project(':service') {
+    dependencies {
+        implementation project(':model')
+        implementation project(':data')
+    }
+}
+
+project(':data') {
+    dependencies {
+        implementation project(':model')
+    }
+}
+
+project(':rest') {
+    dependencies {
+        implementation project(':model')
+        implementation project(':service')
+        annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        annotationProcessor "io.micronaut:micronaut-inject-java"
+        implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+        implementation "io.micronaut:micronaut-inject"
+        implementation "io.micronaut:micronaut-http-server-netty"
+        implementation "io.micronaut:micronaut-http-client"
+        testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+        testImplementation "io.micronaut.test:micronaut-test-junit5"
+    }
+}
+
+project(':app') {
+    apply plugin: 'application'
+
+    mainClassName='com.money.TransferMoneyApplication'
+
+    dependencies {
+        implementation project(':model')
+        implementation project(':service')
+        implementation project(':data')
+        annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        annotationProcessor "io.micronaut:micronaut-inject-java"
+        implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+        implementation "io.micronaut:micronaut-inject"
+        implementation "io.micronaut:micronaut-runtime"
+        implementation "io.micronaut:micronaut-http-server-netty"
+        runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    }
+}
