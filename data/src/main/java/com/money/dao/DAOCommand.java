@@ -1,7 +1,7 @@
 package com.money.dao;
 
 @FunctionalInterface
-public interface DAOCommand<T> {
+public interface DAOCommand{
 
-    T execute();
+    void execute();
 }

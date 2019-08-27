@@ -12,12 +12,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringJoiner;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class AccountDAOImpl implements AccountDAO {
 
-    private static final String GET_ACCOUNTS = "select NUMBER,BALANCE from ACCOUNT where NUMBER in ";
-    private static final String UPDATE_BALANCE = "update ACCOUNT set BALANCE = ? where NUMBER = ? and BALANCE = ?";
+    private static final String GET_ACCOUNTS = "select ACCOUNT_NUMBER,BALANCE from ACCOUNT where ACCOUNT_NUMBER in ";
+    private static final String UPDATE_BALANCE = "update ACCOUNT set BALANCE = ? where ACCOUNT_NUMBER = ? and BALANCE = ?";
 
     private Connection connection;
 
@@ -27,7 +28,12 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Collection<Account> getAccounts(String... accounts) {
+        if (accounts.length == 1 && accounts[0] == null) {
+            throw new NullPointerException();
+        }
+
         Collection<Account> result = new ArrayList<>();
+
         try {
             StringJoiner parameters = new StringJoiner(",");
             Stream.of(accounts).forEach(s -> parameters.add("?"));
@@ -46,26 +52,31 @@ public class AccountDAOImpl implements AccountDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         return result;
     }
 
     @Override
     public int updateBalances(BalanceUpdate... balanceUpdates) {
-        int updateCount = 0;
+        if (balanceUpdates.length == 1 && balanceUpdates[0] == null) {
+            throw new NullPointerException();
+        }
+
+        int[] updateCount;
         try {
             PreparedStatement ps = connection.prepareStatement(UPDATE_BALANCE);
 
             for (BalanceUpdate balanceUpdate : balanceUpdates) {
-                ps.setString(1, balanceUpdate.account().number());
-                ps.setString(2, balanceUpdate.newBalance().toPlainString());
+                ps.setString(1, balanceUpdate.newBalance().toPlainString());
+                ps.setString(2, balanceUpdate.number());
                 ps.setString(3, balanceUpdate.oldBalance().toPlainString());
                 ps.addBatch();
             }
-
-            updateCount = ps.executeUpdate();
+            updateCount = ps.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return updateCount;
+
+        return IntStream.of(updateCount).sum();
     }
 }

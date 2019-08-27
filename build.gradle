@@ -1,3 +1,7 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.1.0" apply false
+}
+
 subprojects {
     apply plugin: 'java'
     group = 'com.money'
@@ -36,6 +40,7 @@ project(':service') {
 project(':data') {
     dependencies {
         implementation project(':model')
+        testImplementation group: 'com.h2database', name: 'h2', version: '1.4.199'
     }
 }
 
@@ -57,6 +62,7 @@ project(':rest') {
 
 project(':app') {
     apply plugin: 'application'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     mainClassName='com.money.TransferMoneyApplication'
 
@@ -64,12 +70,25 @@ project(':app') {
         implementation project(':model')
         implementation project(':service')
         implementation project(':data')
+        implementation project(':rest')
         annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        annotationProcessor "io.micronaut:micronaut-validation"
         annotationProcessor "io.micronaut:micronaut-inject-java"
         implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
         implementation "io.micronaut:micronaut-inject"
+        implementation "io.micronaut:micronaut-validation"
         implementation "io.micronaut:micronaut-runtime"
+        implementation "io.micronaut:micronaut-http-server"
         implementation "io.micronaut:micronaut-http-server-netty"
+        implementation "io.micronaut:micronaut-http-client"
+        testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+        testImplementation "io.micronaut.test:micronaut-test-junit5"
+        implementation group: 'com.h2database', name: 'h2', version: '1.4.199'
         runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    }
+
+    shadowJar {
+        mergeServiceFiles()
     }
 }

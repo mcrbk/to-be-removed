@@ -19,6 +19,7 @@ public class TransferTest {
                 .setFrom(FROM)
                 .setTo(TO)
                 .setAmount(AMOUNT)
+                .setStatus(TransferStatus.UNDEFINED)
                 .build();
     }
 
@@ -29,6 +30,7 @@ public class TransferTest {
                     .setFrom(BLANK)
                     .setTo(TO)
                     .setAmount(AMOUNT)
+                    .setStatus(TransferStatus.UNDEFINED)
                     .build();
         });
     }
@@ -40,6 +42,7 @@ public class TransferTest {
                     .setFrom(TO)
                     .setTo(BLANK)
                     .setAmount(AMOUNT)
+                    .setStatus(TransferStatus.UNDEFINED)
                     .build();
         });
     }
@@ -51,6 +54,7 @@ public class TransferTest {
                     .setFrom(FROM)
                     .setTo(TO)
                     .setAmount(BigDecimal.valueOf(-100))
+                    .setStatus(TransferStatus.UNDEFINED)
                     .build();
         });
     }
@@ -62,6 +66,7 @@ public class TransferTest {
                     .setFrom(FROM)
                     .setTo(TO)
                     .setAmount(BigDecimal.valueOf(0))
+                    .setStatus(TransferStatus.UNDEFINED)
                     .build();
         });
     }

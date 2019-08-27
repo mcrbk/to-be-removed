@@ -7,11 +7,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/*
- * Close connection after each command execution
- *
- * Improvements needed to manage more effectively database connections
- * */
 public abstract class AbstractDAOManager implements DAOManager {
 
     private DataSource dataSource;
@@ -22,25 +17,13 @@ public abstract class AbstractDAOManager implements DAOManager {
     }
 
     @Override
-    public <T> T transaction(DAOCommand<T> command) {
+    public void execute(DAOCommand command) {
         try {
             connection().setAutoCommit(false);
-            T result = command.execute();
+            command.execute();
             connection().commit();
-            return result;
         } catch (Exception e) {
             rollback();
-            throw new RuntimeException(e);
-        } finally {
-            closeConnection();
-        }
-    }
-
-    @Override
-    public <T> T execute(DAOCommand<T> command) {
-        try {
-            return command.execute();
-        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             closeConnection();

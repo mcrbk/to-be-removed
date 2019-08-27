@@ -18,6 +18,10 @@ public abstract class Transfer {
 
     public abstract BigDecimal amount();
 
+    public abstract TransferStatus status();
+
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     public abstract static class Builder {
 
@@ -25,7 +29,9 @@ public abstract class Transfer {
 
         public abstract Builder setTo(String to);
 
-        public abstract Builder setAmount(BigDecimal from);
+        public abstract Builder setAmount(BigDecimal amount);
+
+        public abstract Builder setStatus(TransferStatus status);
 
         public Transfer build() {
             Transfer transfer = autoBuild();

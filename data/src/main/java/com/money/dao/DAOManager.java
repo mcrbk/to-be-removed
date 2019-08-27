@@ -6,7 +6,5 @@ public interface DAOManager {
 
     TransferDAO transferDAO();
 
-    <T> T execute(DAOCommand<T> command);
-
-    <T> T transaction(DAOCommand<T> command);
+    void execute(DAOCommand command);
 }

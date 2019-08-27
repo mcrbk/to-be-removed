@@ -1,6 +1,7 @@
 package com.money.controller;
 
 import com.money.model.Transfer;
+import com.money.model.TransferStatus;
 import com.money.service.TransferService;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
@@ -32,7 +33,12 @@ public class TransferController {
         Transfer transfer;
 
         try {
-            transfer = Transfer.builder().setFrom(from).setTo(to).setAmount(new BigDecimal(amount)).build();
+            transfer = Transfer.builder()
+                    .setFrom(from)
+                    .setTo(to)
+                    .setAmount(new BigDecimal(amount))
+                    .setStatus(TransferStatus.UNDEFINED)
+                    .build();
         } catch (RuntimeException ex) {
             throw new ValidationException();
         }

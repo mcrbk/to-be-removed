@@ -23,5 +23,4 @@ public class DefaultDAOManager extends AbstractDAOManager {
     public TransferDAO transferDAO() {
         return new TransferDAOImpl(connection());
     }
-
 }
